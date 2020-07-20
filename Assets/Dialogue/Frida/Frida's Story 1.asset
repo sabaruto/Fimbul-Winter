@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c054e486cc5ebd41b9b660c58a9a98f, type: 3}
+  m_Name: Frida's Story 1
+  m_EditorClassIdentifier: 
+  dialogueSequence:
+  - name: Frida
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: You're Back! Who did you visit?
+  - name: Bjorn
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: "I went to see Thor\u2019s shrine, do you remember it? I took you with
+      me on a hunting trip a few years back and we stopped there and talked to Thor"
+  - name: Frida
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: I do. What did you tell Thor?
+  - name: Bjorn
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: "I simply asked him for courage. Who better to ask then Thor, the mightiest
+      of the Aesir?\r\n"
+  - name: Frida
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: Will you tell me another story about him?
+  - name: Bjorn
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: Very well, did I tell you about the time the jotun Thrim stole Mjolnir
+      from the thunder god?
+  - name: Frida
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: You didn't!
+  - name: Bjorn
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: "Well then, I\u2019ll tell you now."
+  - name: Bjorn
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: 'Thrim told the gods that he will only give Mjolnir back if they offer
+      him Freyja as his wife. '
+  - name: Bjorn
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: "Freyja would\x19ve never accepted such an offer, so the gods dressed
+      Thor as the bride, with Loki shapeshifted as his bridesmaid, and together they
+      ventured into Jotunheim."
+  - name: Bjorn
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: During the wedding feast, Thor ate an entire ox on his own, and drank
+      so much mead, that the jotnar started to wonder if this really was the beautiful
+      goddess Freyja.
+  - name: Bjorn
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: "Eventually, Thrim kept his end of the bargain and put Mjolnir in who
+      he thought was Freyja\u2019s lap."
+  - name: Bjorn
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: Immediately after, Thor revealed himself, took his hammer and killed
+      every jotun present at the feast, and returned home, to Asgard.
+  - name: Frida
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: He killed all the jotnar alone?
+  - name: Bjorn
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: "He did, Frida, he\u2019s really strong, isn\u2019t he."
+  - name: Frida
+    sprite: {fileID: 21300000, guid: dca8bf7290467724ba8c36f376cd6ea6, type: 3}
+    sentence: Mhm

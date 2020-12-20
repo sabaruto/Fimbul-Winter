@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Statuses
 {
-  public class Slow : Status
-  {
-    public Slow(float time) : base("slow", time)
+    public class Slow : Status
     {
-      statusColor = Color.grey;
-      speedMultiplier *= 0.3f;
-      Reset();
-    } //Slow
-  }
+        public Slow(float time) : base("slow", time)
+        {
+            statusColor = Color.grey;
+            speedMultiplier *= 0.3f;
+            Reset();
+        } //Slow
+    }
 } //Slow

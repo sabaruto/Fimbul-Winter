@@ -8,15 +8,15 @@ using Managers;
 
 namespace Triggers
 {
-  public class SafeLevelTrigger : LevelTrigger
-  {
-    protected override void TryMoveScene(Player player)
+    public class SafeLevelTrigger : LevelTrigger
     {
-      // Finds the GameMaster object
-      GameMaster gameMaster = FindObjectOfType<GameMaster>();
+        protected override void TryMoveScene(Player player)
+        {
+            // Finds the GameMaster object
+            var gameMaster = FindObjectOfType<GameMaster>();
 
-      // Checks whether all the enemies in the game are dead
-      if (gameMaster.EnemiesDead()) gameMaster.MoveScene(levelRef);
+            // Checks whether all the enemies in the game are dead
+            if (gameMaster.EnemiesDead()) gameMaster.MoveScene(levelRef);
+        }
     }
-  }
 }

@@ -6,83 +6,83 @@ using UnityEngine;
 
 namespace Enemies
 {
-  public class Drunk : Enemy
-  {
-    //The chasing radius
-    private readonly float chasingRadius = 3;
-
-    private readonly float kickRadius = 2;
-
-    [SerializeField] private AreaChecker stabShape;
-
-    private new void Awake()
+    public class Drunk : Enemy
     {
-      base.Awake();
+        [SerializeField] private AreaChecker stabShape;
 
-      //Stab, the belligerent drunk stabs the player, it adds bleed
-      Ability stab = new Ability("Stab", 3, 10, 0, 0.2f, Stab);
+        //The chasing radius
+        private readonly float chasingRadius = 3;
 
-      //Kick, the belligerent drunk kiks the player
-      Ability kick = new Ability("Kick", 2, 5, 10, 0.5f, Kick, 0.2f);
+        private readonly float kickRadius = 2;
 
-      abilityList = new[] {stab, kick};
+        private new void Awake()
+        {
+            base.Awake();
 
-      SetVariables("Belligerent Drunk", 50, 20, 1, true);
-    } //Awake
+            //Stab, the belligerent drunk stabs the player, it adds bleed
+            var stab = new Ability("Stab", 3, 10, 0, 0.2f, Stab);
 
-    // Update is called once per frame
-    private new void Update()
-    {
-      base.Update();
+            //Kick, the belligerent drunk kiks the player
+            var kick = new Ability("Kick", 2, 5, 10, 0.5f, Kick, 0.2f);
 
-      if (!IsAlive()) return;
+            abilityList = new[] {stab, kick};
 
-      // Getting the distance between the player and itself
-      var distance = Vector2.Distance(transform.position,
-        player.transform.position);
+            SetVariables("Belligerent Drunk", 50, 20, 1, true);
+        } //Awake
 
-      if (distance < chasingRadius) currentTarget = player;
+        // Update is called once per frame
+        private new void Update()
+        {
+            base.Update();
 
-      // Checks if the player is within backstab radius and if the ability is ready
-      if (distance < kickRadius && !isCasting) GetAbility("Kick").StartAbility(this);
+            if (!IsAlive()) return;
 
-      if (distance < kickRadius && !isCasting) GetAbility("Stab").StartAbility(this);
-    } //Update
+            // Getting the distance between the player and itself
+            var distance = Vector2.Distance(transform.position,
+                player.transform.position);
 
-    //This method uses the stab ability
-    private void Stab()
-    {
-      //Checks if the plaeyr is in range
-      var playersInRange = stabShape.GetCharactersInRange<Player>();
+            if (distance < chasingRadius) currentTarget = player;
 
-      if (playersInRange.Length > 0)
-      {
-        //Hits the player
-        currentTarget = playersInRange[0];
+            // Checks if the player is within backstab radius and if the ability is ready
+            if (distance < kickRadius && !isCasting) GetAbility("Kick").StartAbility(this);
 
-        //Deals damage to the player
-        currentTarget.TakeDamage(GetAbility("Stab").GetDamage());
+            if (distance < kickRadius && !isCasting) GetAbility("Stab").StartAbility(this);
+        } //Update
 
-        currentTarget.AddStatus(new Bleed(3));
-      }
+        //This method uses the stab ability
+        private void Stab()
+        {
+            //Checks if the plaeyr is in range
+            var playersInRange = stabShape.GetCharactersInRange<Player>();
 
-      //Start the hit ability cooldown
-      GetAbility("Stab").SetCoolDown();
+            if (playersInRange.Length > 0)
+            {
+                //Hits the player
+                currentTarget = playersInRange[0];
 
-      isCasting = false;
-    } //Stab
+                //Deals damage to the player
+                currentTarget.TakeDamage(GetAbility("Stab").GetDamage());
 
-    //This method uses the kick ability
-    private void Kick()
-    {
-      if (GetAbility("Kick").IsAbilityReady(this))
-      {
-        //Deal damage to the player
-        player.TakeDamage(GetAbility("Kick").GetDamage());
+                currentTarget.AddStatus(new Bleed(3));
+            }
 
-        //Begin the wind down timer
-        GetAbility("Kick").Complete(this);
-      } //if
-    } //Kick
-  }
+            //Start the hit ability cooldown
+            GetAbility("Stab").SetCoolDown();
+
+            isCasting = false;
+        } //Stab
+
+        //This method uses the kick ability
+        private void Kick()
+        {
+            if (GetAbility("Kick").IsAbilityReady(this))
+            {
+                //Deal damage to the player
+                player.TakeDamage(GetAbility("Kick").GetDamage());
+
+                //Begin the wind down timer
+                GetAbility("Kick").Complete(this);
+            } //if
+        } //Kick
+    }
 } //Drunk

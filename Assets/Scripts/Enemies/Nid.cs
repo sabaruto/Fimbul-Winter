@@ -6,104 +6,104 @@ using UnityEngine;
 
 namespace Enemies
 {
-    /// <summary>
-    ///   Nid will be the tutorial giant. His name means the loss of honour
-    ///   He is a coward that has ran from the battlefield of Ragnarok
-    ///   His abilities deal low damage.
-    ///   Abilities: Hit, Yell and Crush
-    /// </summary>
-    public class Nid : Enemy
-  {
-    //The radius for different abilities
-    private readonly float chasingRadius = 3;
-    private readonly float crushDistance = 1;
-    private readonly float hitDistance = 1;
-    private readonly float yellRadius = 2;
-
-    [SerializeField] private AreaChecker hitShape;
-
-    private new void Awake()
+  /// <summary>
+  ///     Nid will be the tutorial giant. His name means the loss of honour
+  ///     He is a coward that has ran from the battlefield of Ragnarok
+  ///     His abilities deal low damage.
+  ///     Abilities: Hit, Yell and Crush
+  /// </summary>
+  public class Nid : Enemy
     {
-      base.Awake();
+        [SerializeField] private AreaChecker hitShape;
 
-      //Hit, Nid hits the player with his club, knocking him over(rooting him)
-      Ability hit = new Ability("Hit", 5, 5, 0, 0.7f, Hit, 0.2f);
+        //The radius for different abilities
+        private readonly float chasingRadius = 3;
+        private readonly float crushDistance = 1;
+        private readonly float hitDistance = 1;
+        private readonly float yellRadius = 2;
 
-      //Yell, Nid yells at the player and adds the fear effect
-      //if the player is in range
-      Ability yell = new Ability("Yell", 0, 10, 0, 2f, Yell);
+        private new void Awake()
+        {
+            base.Awake();
 
-      //Crush, Nid tries to Crush the player with his foot,
-      //knocking him over and rooting him if it hits
-      Ability crush = new Ability("Crush", 20, 10, 0, 3f, Crush, 0.3f);
+            //Hit, Nid hits the player with his club, knocking him over(rooting him)
+            var hit = new Ability("Hit", 5, 5, 0, 0.7f, Hit, 0.2f);
 
-      abilityList = new[] {hit, yell, crush};
+            //Yell, Nid yells at the player and adds the fear effect
+            //if the player is in range
+            var yell = new Ability("Yell", 0, 10, 0, 2f, Yell);
 
-      //Set Nid's variables
-      SetVariables("Nid", 75, 1, 1, true);
-    } //Awake
+            //Crush, Nid tries to Crush the player with his foot,
+            //knocking him over and rooting him if it hits
+            var crush = new Ability("Crush", 20, 10, 0, 3f, Crush, 0.3f);
 
-    // Update is called once per frame
-    private new void Update()
-    {
-      base.Update();
+            abilityList = new[] {hit, yell, crush};
 
-      // Getting the distance between the player and itself
-      var distance = Vector2.Distance(transform.position,
-        player.transform.position);
+            //Set Nid's variables
+            SetVariables("Nid", 75, 1, 1, true);
+        } //Awake
 
-      if (distance < chasingRadius) currentTarget = player;
+        // Update is called once per frame
+        private new void Update()
+        {
+            base.Update();
 
-      // Checks if the player is within yell radius and if the ability is ready
-      if (distance < yellRadius && !isCasting) GetAbility("Yell").StartAbility(this);
+            // Getting the distance between the player and itself
+            var distance = Vector2.Distance(transform.position,
+                player.transform.position);
 
-      //Check if the player is within stab distance
-      if (distance < crushDistance && !isCasting) GetAbility("Crush").StartAbility(this);
+            if (distance < chasingRadius) currentTarget = player;
 
-      if (distance < hitDistance && !isCasting) GetAbility("Hit").StartAbility(this);
-    } //Update
+            // Checks if the player is within yell radius and if the ability is ready
+            if (distance < yellRadius && !isCasting) GetAbility("Yell").StartAbility(this);
 
-    private void Hit()
-    {
-      //Checks if the player is in range
-      var playersInRange = hitShape.GetCharactersInRange<Player>();
+            //Check if the player is within stab distance
+            if (distance < crushDistance && !isCasting) GetAbility("Crush").StartAbility(this);
 
-      if (playersInRange.Length > 0)
-      {
-        //Hits the player
-        currentTarget = playersInRange[0];
+            if (distance < hitDistance && !isCasting) GetAbility("Hit").StartAbility(this);
+        } //Update
 
-        //Deals damage to the player
-        currentTarget.TakeDamage(GetAbility("Hit").GetDamage());
+        private void Hit()
+        {
+            //Checks if the player is in range
+            var playersInRange = hitShape.GetCharactersInRange<Player>();
 
-        //Give the player the root status
-        currentTarget.AddStatus(new Root(1));
-      }
+            if (playersInRange.Length > 0)
+            {
+                //Hits the player
+                currentTarget = playersInRange[0];
 
-      GetAbility("Hit").Complete(this);
-    } //Hit
+                //Deals damage to the player
+                currentTarget.TakeDamage(GetAbility("Hit").GetDamage());
 
-    private void Yell()
-    {
-      //Add the fear status to the player
-      player.AddStatus(new Fear(3));
+                //Give the player the root status
+                currentTarget.AddStatus(new Root(1));
+            }
 
-      //Start the yell ability cooldown
-      GetAbility("Yell").SetCoolDown();
+            GetAbility("Hit").Complete(this);
+        } //Hit
 
-      isCasting = false;
-    } //Yell
+        private void Yell()
+        {
+            //Add the fear status to the player
+            player.AddStatus(new Fear(3));
 
-    private void Crush()
-    {
-      //Deal damage to the player
-      player.TakeDamage(GetAbility("Crush").GetDamage());
+            //Start the yell ability cooldown
+            GetAbility("Yell").SetCoolDown();
 
-      //Give the player the root effect
-      player.AddStatus(new Root(1.5f));
+            isCasting = false;
+        } //Yell
 
-      //Begin the wind down timer
-      GetAbility("Crush").Complete(this);
-    } //Crush
-  }
+        private void Crush()
+        {
+            //Deal damage to the player
+            player.TakeDamage(GetAbility("Crush").GetDamage());
+
+            //Give the player the root effect
+            player.AddStatus(new Root(1.5f));
+
+            //Begin the wind down timer
+            GetAbility("Crush").Complete(this);
+        } //Crush
+    }
 } //Nid

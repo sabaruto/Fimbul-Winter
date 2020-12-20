@@ -6,19 +6,19 @@ using Base_Classes;
 
 namespace Projectiles
 {
-  public class PiercingProjectile : Projectile
-  {
-    // The list of game objects that hit the projectile
-    private readonly List<Character> hitCharacters = new List<Character>();
-
-    protected override void Attack(Character otherCharacter)
+    public class PiercingProjectile : Projectile
     {
-      // Checks if the characters are in the list
-      if (!hitCharacters.Contains(otherCharacter))
-      {
-        hitCharacters.Add(otherCharacter);
-        otherCharacter.TakeDamage(damage);
-      }
+        // The list of game objects that hit the projectile
+        private readonly List<Character> hitCharacters = new List<Character>();
+
+        protected override void Attack(Character otherCharacter)
+        {
+            // Checks if the characters are in the list
+            if (!hitCharacters.Contains(otherCharacter))
+            {
+                hitCharacters.Add(otherCharacter);
+                otherCharacter.TakeDamage(damage);
+            }
+        }
     }
-  }
 }

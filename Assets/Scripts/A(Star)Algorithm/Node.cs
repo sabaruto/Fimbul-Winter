@@ -3,159 +3,195 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-///   The node of the A* Algorithm, holding all the specific values for the node
+///     The node of the A* Algorithm, holding all the specific values for the node
 /// </summary>
 public class Node : IComparable<Node>
 {
-  // The h and g cost finding the distance between the start and end of the path
-  private readonly float hCost;
+    // The h and g cost finding the distance between the start and end of the path
+    private readonly float hCost;
 
-  // The index of the node
-  private readonly int index;
+    // The index of the node
+    private readonly int index;
 
-  // Checking if the node is a obstacle
-  private readonly bool isObstacle;
-  private readonly Vector2 position;
-  private float gCost;
+    // Checking if the node is a obstacle
+    private readonly bool isObstacle;
+    private readonly Vector2 position;
+    private float gCost;
 
-  // Checking if the node has been explored
-  private bool hasExplored;
-  private Node parentNode;
+    // Checking if the node has been explored
+    private bool hasExplored;
+    private Node parentNode;
 
-  public Node(Vector2 position, int index, Vector2 endNodePosition,
-    Node parentNode)
-  {
-    // Setting refrences to the position and parent node
-    this.position = position;
-    this.parentNode = parentNode;
-    this.index = index;
-
-    // Finding the hCost of the node
-
-    // Getting the difference in position between the node and the end node
-    Vector2 positionDifference = endNodePosition - position;
-
-    // Finding the absolute values for the x and y position
-    var xValue = Mathf.Abs(positionDifference.x);
-    var yValue = Mathf.Abs(positionDifference.y);
-
-    // Gets the difference between the x and y values
-    var coordinateDifference = xValue - yValue;
-
-    // If there is a larger x value, get the diagonal distance and add to the 
-    // difference
-    var diagonalDistance = coordinateDifference > 0 ? yValue : xValue;
-
-    hCost = diagonalDistance * Mathf.Sqrt(2) + Mathf.Abs(coordinateDifference);
-
-    FindGCost();
-  }
-
-  /// <summary>
-  ///   Creating a obstacle node
-  /// </summary>
-  public Node(Vector2 position, int index)
-  {
-    this.position = position;
-    isObstacle = true;
-    this.index = index;
-  }
-
-  public int CompareTo(Node y)
-  {
-    var returnValue = ConvertToCompare(FCost() - y.FCost());
-    if (returnValue == 0) returnValue = ConvertToCompare(hCost - y.hCost);
-    return returnValue;
-  }
-
-  /// <summary>
-  ///   When given a newley explored position, it checks if that position is a
-  ///   better parent node and changes it's values accordingly if so. It returns
-  ///   wheather or not the node updated
-  /// </summary>
-  public bool CheckParentNode(Node updatedNode)
-  {
-    // Finds the gCost using the new node
-    var newGCost = updatedNode.gCost +
-                   Mathf.Clamp(Vector2.Distance(updatedNode.position, position), -1.4f, 1.4f);
-
-
-    if (newGCost < gCost)
+    public Node(Vector2 position, int index, Vector2 endNodePosition,
+        Node parentNode)
     {
-      parentNode = updatedNode;
-      gCost = newGCost;
+        // Setting refrences to the position and parent node
+        this.position = position;
+        this.parentNode = parentNode;
+        this.index = index;
 
-      return true;
+        // Finding the hCost of the node
+
+        // Getting the difference in position between the node and the end node
+        var positionDifference = endNodePosition - position;
+
+        // Finding the absolute values for the x and y position
+        var xValue = Mathf.Abs(positionDifference.x);
+        var yValue = Mathf.Abs(positionDifference.y);
+
+        // Gets the difference between the x and y values
+        var coordinateDifference = xValue - yValue;
+
+        // If there is a larger x value, get the diagonal distance and add to the 
+        // difference
+        var diagonalDistance = coordinateDifference > 0 ? yValue : xValue;
+
+        hCost = diagonalDistance * Mathf.Sqrt(2) + Mathf.Abs(coordinateDifference);
+
+        FindGCost();
     }
 
-    return false;
-  }
+    /// <summary>
+    ///     Creating a obstacle node
+    /// </summary>
+    public Node(Vector2 position, int index)
+    {
+        this.position = position;
+        isObstacle = true;
+        this.index = index;
+    }
 
-  /// <summary>
-  ///   Finds the lineage of parent nodes in the form of a list of nodes
-  /// </summary>
-  public List<Node> GetLineage()
-  {
-    var lineage = new List<Node>();
+    public int CompareTo(Node y)
+    {
+        var returnValue = ConvertToCompare(FCost() - y.FCost());
+        if (returnValue == 0) returnValue = ConvertToCompare(hCost - y.hCost);
+        return returnValue;
+    }
 
-    if (parentNode != null) lineage = parentNode.GetLineage();
+    /// <summary>
+    ///     When given a newley explored position, it checks if that position is a
+    ///     better parent node and changes it's values accordingly if so. It returns
+    ///     wheather or not the node updated
+    /// </summary>
+    public bool CheckParentNode(Node updatedNode)
+    {
+        // Finds the gCost using the new node
+        var newGCost = updatedNode.gCost +
+                       Mathf.Clamp(Vector2.Distance(updatedNode.position, position), -1.4f, 1.4f);
 
-    lineage.Add(this);
 
-    return lineage;
-  }
+        if (newGCost < gCost)
+        {
+            parentNode = updatedNode;
+            gCost = newGCost;
 
-  /// <summary>
-  ///   Finds the g cost of the node
-  /// </summary>
-  private void FindGCost()
-  {
-    if (parentNode != null)
-      gCost = parentNode.gCost + Mathf.Clamp(Vector2
-        .Distance(parentNode.position, position), -1.4f, 1.4f);
-    else
-      gCost = 0;
-  }
+            return true;
+        }
 
-  /// <summary>
-  ///   Gets the h cost of the node
-  /// </summary>
-  public float HCost() { return hCost; }
+        return false;
+    }
 
-  /// <summary>
-  ///   Finds the f cost of the node
-  /// </summary>
-  public float FCost() { return hCost + gCost; }
+    /// <summary>
+    ///     Finds the lineage of parent nodes in the form of a list of nodes
+    /// </summary>
+    public List<Node> GetLineage()
+    {
+        var lineage = new List<Node>();
 
-  public Vector2 GetPosition() { return position; }
+        if (parentNode != null) lineage = parentNode.GetLineage();
 
-  public void Explore() { hasExplored = true; }
+        lineage.Add(this);
 
-  public bool HasExplored() { return hasExplored; }
+        return lineage;
+    }
 
-  public bool IsObstacle() { return isObstacle; }
+    /// <summary>
+    ///     Finds the g cost of the node
+    /// </summary>
+    private void FindGCost()
+    {
+        if (parentNode != null)
+            gCost = parentNode.gCost + Mathf.Clamp(Vector2
+                .Distance(parentNode.position, position), -1.4f, 1.4f);
+        else
+            gCost = 0;
+    }
 
-  public int GetIndex() { return index; }
+    /// <summary>
+    ///     Gets the h cost of the node
+    /// </summary>
+    public float HCost()
+    {
+        return hCost;
+    }
 
-  public int Compare(object x, object y) { return ((Node) x).CompareTo((Node) y); }
+    /// <summary>
+    ///     Finds the f cost of the node
+    /// </summary>
+    public float FCost()
+    {
+        return hCost + gCost;
+    }
 
-  // Changing the values to become more distinct
-  private int ConvertToCompare(float value)
-  {
-    if (value > 0) return 1;
-    if (value < 0) return -1;
-    return 0;
-  }
+    public Vector2 GetPosition()
+    {
+        return position;
+    }
 
-  // Define the is greater than operator.
-  public static bool operator >(Node operand1, Node operand2) { return operand1.CompareTo(operand2) == 1; }
+    public void Explore()
+    {
+        hasExplored = true;
+    }
 
-  // Define the is less than operator.
-  public static bool operator <(Node operand1, Node operand2) { return operand1.CompareTo(operand2) == -1; }
+    public bool HasExplored()
+    {
+        return hasExplored;
+    }
 
-  // Define the is greater than or equal to operator.
-  public static bool operator >=(Node operand1, Node operand2) { return operand1.CompareTo(operand2) >= 0; }
+    public bool IsObstacle()
+    {
+        return isObstacle;
+    }
 
-  // Define the is less than or equal to operator.
-  public static bool operator <=(Node operand1, Node operand2) { return operand1.CompareTo(operand2) <= 0; }
+    public int GetIndex()
+    {
+        return index;
+    }
+
+    public int Compare(object x, object y)
+    {
+        return ((Node) x).CompareTo((Node) y);
+    }
+
+    // Changing the values to become more distinct
+    private int ConvertToCompare(float value)
+    {
+        if (value > 0) return 1;
+        if (value < 0) return -1;
+        return 0;
+    }
+
+    // Define the is greater than operator.
+    public static bool operator >(Node operand1, Node operand2)
+    {
+        return operand1.CompareTo(operand2) == 1;
+    }
+
+    // Define the is less than operator.
+    public static bool operator <(Node operand1, Node operand2)
+    {
+        return operand1.CompareTo(operand2) == -1;
+    }
+
+    // Define the is greater than or equal to operator.
+    public static bool operator >=(Node operand1, Node operand2)
+    {
+        return operand1.CompareTo(operand2) >= 0;
+    }
+
+    // Define the is less than or equal to operator.
+    public static bool operator <=(Node operand1, Node operand2)
+    {
+        return operand1.CompareTo(operand2) <= 0;
+    }
 }

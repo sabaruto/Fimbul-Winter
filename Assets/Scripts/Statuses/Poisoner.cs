@@ -6,36 +6,36 @@ using UnityEngine;
 
 namespace Statuses
 {
-  public class Poisoner : Status
-  {
-    private readonly int attackDamage;
-    private bool addedDamage;
-
-    public Poisoner(float time, int attackDamage = 0, float attackSpeed = 3) : base("Poisoner", time)
+    public class Poisoner : Status
     {
-      statusColor = Color.yellow;
-      attackSpeedMultiplier *= attackSpeed;
-      this.attackDamage = attackDamage;
-    }
+        private readonly int attackDamage;
+        private bool addedDamage;
 
-    public override float[] Effect(Character character)
-    {
-      // Increases the damage of the character
-      if (!addedDamage)
-      {
-        character.AddAttackDamage(attackDamage);
-        addedDamage = true;
-      }
+        public Poisoner(float time, int attackDamage = 0, float attackSpeed = 3) : base("Poisoner", time)
+        {
+            statusColor = Color.yellow;
+            attackSpeedMultiplier *= attackSpeed;
+            this.attackDamage = attackDamage;
+        }
 
-      character.SetAttackStatus(new Poison(2));
-      return base.Effect(character);
-    }
+        public override float[] Effect(Character character)
+        {
+            // Increases the damage of the character
+            if (!addedDamage)
+            {
+                character.AddAttackDamage(attackDamage);
+                addedDamage = true;
+            }
 
-    public override void Clear(Character character)
-    {
-      base.Clear(character);
-      character.AddAttackDamage(-attackDamage);
-      character.SetAttackStatus(null);
+            character.SetAttackStatus(new Poison(2));
+            return base.Effect(character);
+        }
+
+        public override void Clear(Character character)
+        {
+            base.Clear(character);
+            character.AddAttackDamage(-attackDamage);
+            character.SetAttackStatus(null);
+        }
     }
-  }
 }

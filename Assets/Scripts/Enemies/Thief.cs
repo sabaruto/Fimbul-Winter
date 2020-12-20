@@ -6,86 +6,88 @@ using UnityEngine;
 
 namespace Enemies
 {
-  public class Thief : Enemy
-  {
-    private readonly float backstabDistance = 2;
-
-    // The chasing period
-    private readonly float chasingPeriod = 5;
-
-    // The chasing radius
-    private readonly float chasingRadius = 3;
-
-    // private float stabDistance = 1;
-
-    [SerializeField] private AreaChecker stabShape;
-    private static readonly int IsStabbing = Animator.StringToHash("isStabbing");
-
-    private new void Awake()
+    public class Thief : Enemy
     {
-      base.Awake();
+        private static readonly int IsStabbing = Animator.StringToHash("isStabbing");
 
-      //Backstab, deal damage to the player and apply a bleed effect
-      Ability backstab = new Ability("Backstab", 10, 15, 20, 0.25f, Backstab);
+        // private float stabDistance = 1;
 
-      abilityList = new[] {backstab};
+        [SerializeField] private AreaChecker stabShape;
+        private readonly float backstabDistance = 2;
 
-      //Set the variables of the thief
-      SetVariables("Thief", 20, 40, 1, true);
-    } //Awake
+        // The chasing period
+        private readonly float chasingPeriod = 5;
 
-    // Update is called once per frame
-    private new void Update()
-    {
-      base.Update();
+        // The chasing radius
+        private readonly float chasingRadius = 3;
 
-      //Check if the thief is still alive
-      if (!IsAlive()) return;
-
-      // Getting the distance between the player and itself
-      var distance = Vector2.Distance(transform.position,
-        player.transform.position);
-
-      if (distance < chasingRadius)
-      {
-        currentTarget = player;
-        Chase();
-      } //if
-
-      // Checks if the player is within backstab radius and if the ability is ready
-      if (distance < backstabDistance && !isCasting)
-        if (GetAbility("Backstab").StartAbility(this))
+        private new void Awake()
         {
-          animator.SetBool(IsStabbing, true);
-          Debug.Log("Stabbing");
-        }
-    } //Update
+            base.Awake();
 
-    //This method uses the backstab ability. 
-    private void Backstab()
-    {
-      //Checks if the plaeyr is in range
-      var playersInRange = stabShape.GetCharactersInRange<Player>();
+            //Backstab, deal damage to the player and apply a bleed effect
+            var backstab = new Ability("Backstab", 10, 15, 20, 0.25f, Backstab);
 
-      if (playersInRange.Length > 0)
-      {
-        //Hits the player
-        currentTarget = playersInRange[0];
+            abilityList = new[] {backstab};
 
-        //Deals damage to the player
-        currentTarget.TakeDamage(GetAbility("Backstab").GetDamage());
+            //Set the variables of the thief
+            SetVariables("Thief", 20, 40, 1, true);
+        } //Awake
 
-        //Give the player the root status
-        currentTarget.AddStatus(new Bleed(5));
-      }
+        // Update is called once per frame
+        private new void Update()
+        {
+            base.Update();
+            //Check if the thief is still alive
+            if (!IsAlive()) return;
 
-      //Start the hit ability cooldown
-      GetAbility("Backstab").Complete(this);
-      animator.SetBool(IsStabbing, false);
-      Debug.Log("Done stabbing");
-    } //Backstab
+            // Getting the distance between the player and itself
+            var distance = Vector2.Distance(transform.position,
+                player.transform.position);
 
-    // This method starts the chasing
-    private void Chase() { AddStatus(new Hunt(chasingPeriod)); } //Chase
-  }
+            if (distance < chasingRadius)
+            {
+                currentTarget = player;
+                Chase();
+            } //if
+
+            // Checks if the player is within backstab radius and if the ability is ready
+            if (distance < backstabDistance && !isCasting)
+                if (GetAbility("Backstab").StartAbility(this))
+                {
+                    animator.SetBool(IsStabbing, true);
+                    Debug.Log("Stabbing");
+                }
+        } //Update
+
+        //This method uses the backstab ability. 
+        private void Backstab()
+        {
+            //Checks if the plaeyr is in range
+            var playersInRange = stabShape.GetCharactersInRange<Player>();
+
+            if (playersInRange.Length > 0)
+            {
+                //Hits the player
+                currentTarget = playersInRange[0];
+
+                //Deals damage to the player
+                currentTarget.TakeDamage(GetAbility("Backstab").GetDamage());
+
+                //Give the player the root status
+                currentTarget.AddStatus(new Bleed(5));
+            }
+
+            //Start the hit ability cooldown
+            GetAbility("Backstab").Complete(this);
+            animator.SetBool(IsStabbing, false);
+            Debug.Log("Done stabbing");
+        } //Backstab
+
+        // This method starts the chasing
+        private void Chase()
+        {
+            AddStatus(new Hunt(chasingPeriod));
+        } //Chase
+    }
 } //Thief

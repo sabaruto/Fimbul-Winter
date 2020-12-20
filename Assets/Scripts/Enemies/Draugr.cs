@@ -6,119 +6,119 @@ using UnityEngine;
 
 namespace Enemies
 {
-  public class Draugr : Enemy
-  {
-    // The chasing radius
-    private readonly float chasingRadius = 2;
-
-    private readonly float stabDistance = 1;
-
-    private readonly float stenchRadius = 3;
-
-    [SerializeField] private AreaChecker stabShape;
-
-    private new void Awake()
+    public class Draugr : Enemy
     {
-      base.Awake();
+        [SerializeField] private AreaChecker stabShape;
 
-      //Stab, this is pretty much a basic attack. The thief deals damage to the player
-      Ability stab = new Ability("Stab", 2, 1, 0, 0.5f, Stab);
+        // The chasing radius
+        private readonly float chasingRadius = 2;
 
-      //Stench, the draugr releases the stench of a dead corpse, stunning the player
-      Ability stench = new Ability("Stench", 1, 10, 0, 1f, Stench, 0.1f);
+        private readonly float stabDistance = 1;
 
-      //Awaken, the draugr becomes larger. This increases their damage and health and lowers their attack speed
-      Ability awaken = new Ability("Awaken", 0, 15, 0, 2.5f, Awaken);
+        private readonly float stenchRadius = 3;
 
-      abilityList = new[] {stab, stench, awaken};
+        private new void Awake()
+        {
+            base.Awake();
 
-      //Set the variables of the draugr
-      SetVariables("Draugr", 100, 1, 1, true);
+            //Stab, this is pretty much a basic attack. The thief deals damage to the player
+            var stab = new Ability("Stab", 2, 1, 0, 0.5f, Stab);
 
-      TakeDamage(20);
-    } //Awake
+            //Stench, the draugr releases the stench of a dead corpse, stunning the player
+            var stench = new Ability("Stench", 1, 10, 0, 1f, Stench, 0.1f);
 
-    // Update is called once per frame
-    private new void Update()
-    {
-      base.Update();
+            //Awaken, the draugr becomes larger. This increases their damage and health and lowers their attack speed
+            var awaken = new Ability("Awaken", 0, 15, 0, 2.5f, Awaken);
 
-      if (!IsAlive()) return;
+            abilityList = new[] {stab, stench, awaken};
 
-      // Getting the distance between the player and itself
-      var distance = Vector2.Distance(transform.position,
-        player.transform.position);
+            //Set the variables of the draugr
+            SetVariables("Draugr", 100, 1, 1, true);
 
-      if (distance < chasingRadius)
-      {
-        currentTarget = player;
-        Awaken();
-      } //if
+            TakeDamage(20);
+        } //Awake
 
-      // Checks if the player is within stench radius and if the ability is ready
-      if (distance < stenchRadius && !isCasting) GetAbility("Stench").StartAbility(this);
+        // Update is called once per frame
+        private new void Update()
+        {
+            base.Update();
 
-      //Check if the player is within stab distance
-      if (distance < stabDistance) GetAbility("Stab").StartAbility(this);
-    } //Update
+            if (!IsAlive()) return;
 
-    //This method uses the stab ability
-    private void Stab()
-    {
-      //Checks if the player is in range
-      var playersInRange = stabShape.GetCharactersInRange<Player>();
+            // Getting the distance between the player and itself
+            var distance = Vector2.Distance(transform.position,
+                player.transform.position);
 
-      if (playersInRange.Length > 0)
-      {
-        //Hits the player
-        currentTarget = playersInRange[0];
+            if (distance < chasingRadius)
+            {
+                currentTarget = player;
+                Awaken();
+            } //if
 
-        //Deals damage to the player
-        currentTarget.TakeDamage(GetAbility("Stab").GetDamage());
+            // Checks if the player is within stench radius and if the ability is ready
+            if (distance < stenchRadius && !isCasting) GetAbility("Stench").StartAbility(this);
 
-        //Adds the bleed effect
-        currentTarget.AddStatus(new Bleed(1));
-      } //if
+            //Check if the player is within stab distance
+            if (distance < stabDistance) GetAbility("Stab").StartAbility(this);
+        } //Update
 
-      //Start the hit ability cooldown
-      GetAbility("Stab").SetCoolDown();
+        //This method uses the stab ability
+        private void Stab()
+        {
+            //Checks if the player is in range
+            var playersInRange = stabShape.GetCharactersInRange<Player>();
 
-      isCasting = false;
-    } //Stab
+            if (playersInRange.Length > 0)
+            {
+                //Hits the player
+                currentTarget = playersInRange[0];
 
-    //This method uses the awaken ability
-    private void Awaken()
-    {
-      if (GetAbility("Awaken").IsAbilityReady(this))
-      {
-        //Add damage to the stab and stench ability
-        GetAbility("Stab").AddDamage(5);
-        GetAbility("Stench").AddDamage(3);
+                //Deals damage to the player
+                currentTarget.TakeDamage(GetAbility("Stab").GetDamage());
 
-        //Increase the draugr's health
-        IncreaseHealth(20);
+                //Adds the bleed effect
+                currentTarget.AddStatus(new Bleed(1));
+            } //if
 
-        //Add the slow status to the draugr
-        AddStatus(new Slow(10));
+            //Start the hit ability cooldown
+            GetAbility("Stab").SetCoolDown();
 
-        //Start awaken ability cooldown
-        GetAbility("Awaken").SetCoolDown();
-      } //if
+            isCasting = false;
+        } //Stab
 
-      isCasting = false;
-    } //Awaken
+        //This method uses the awaken ability
+        private void Awaken()
+        {
+            if (GetAbility("Awaken").IsAbilityReady(this))
+            {
+                //Add damage to the stab and stench ability
+                GetAbility("Stab").AddDamage(5);
+                GetAbility("Stench").AddDamage(3);
 
-    //This method uses the stench ability
-    private void Stench()
-    {
-      //Deal damage to the players
-      player.TakeDamage(GetAbility("Stench").GetDamage());
+                //Increase the draugr's health
+                IncreaseHealth(20);
 
-      //Give the player the root effect
-      player.AddStatus(new Root(1));
+                //Add the slow status to the draugr
+                AddStatus(new Slow(10));
 
-      //Begin the wind down timer
-      GetAbility("Stench").Complete(this);
-    } //Stench
-  }
+                //Start awaken ability cooldown
+                GetAbility("Awaken").SetCoolDown();
+            } //if
+
+            isCasting = false;
+        } //Awaken
+
+        //This method uses the stench ability
+        private void Stench()
+        {
+            //Deal damage to the players
+            player.TakeDamage(GetAbility("Stench").GetDamage());
+
+            //Give the player the root effect
+            player.AddStatus(new Root(1));
+
+            //Begin the wind down timer
+            GetAbility("Stench").Complete(this);
+        } //Stench
+    }
 } //Draugr

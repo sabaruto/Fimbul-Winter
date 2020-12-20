@@ -6,105 +6,110 @@ using UnityEngine;
 
 namespace Enemies
 {
-  public class Viddarot : Wolf
-  {
-    //The claw distance
-    private readonly float clawDistance = 2;
-
-    //The root distance
-    private readonly float rootDistance = 4;
-
-    [SerializeField] private AreaChecker clawShape;
-
-    // [SerializeField] private AreaChecker rootsShape;
-
-    private new void Awake()
+    public class Viddarot : Wolf
     {
-      base.Awake();
+        [SerializeField] private AreaChecker clawShape;
 
-      //Root, Viddarot makes roots rise from the ground, rooting the enemy
-      Ability roots = new Ability("Roots", 10, 15, 0, 0.3f, Roots, 0.4f);
+        //The claw distance
+        private readonly float clawDistance = 2;
 
-      //Claw, Viddarot rushes at the player and tries to claw him
-      Ability claw = new Ability("Claw", 15, 10, 0, 0.3f, Claw);
+        //The root distance
+        private readonly float rootDistance = 4;
 
-      //Ram, Viddarot rushes at the player and tries to ram him with his antlers
-      Ability ram = new Ability("Ram", 20, 10, 0, 0.3f, Ram, 0.4f);
+        // [SerializeField] private AreaChecker rootsShape;
 
-      abilityList = new[] {claw, ram, roots};
+        private new void Awake()
+        {
+            base.Awake();
 
-      //Setting the variables for viddarot
-      SetVariables("Viddarot", 150, 1, 1, true);
-    } //Awake
+            //Root, Viddarot makes roots rise from the ground, rooting the enemy
+            var roots = new Ability("Roots", 10, 15, 0, 0.3f, Roots, 0.4f);
 
-    private void Start() { statuses.Add(new Stalk(stalkPeriod)); } //Start
+            //Claw, Viddarot rushes at the player and tries to claw him
+            var claw = new Ability("Claw", 15, 10, 0, 0.3f, Claw);
 
-    // Update is called once per frame
-    private new void Update()
-    {
-      base.Update();
+            //Ram, Viddarot rushes at the player and tries to ram him with his antlers
+            var ram = new Ability("Ram", 20, 10, 0, 0.3f, Ram, 0.4f);
 
-      if (!IsAlive()) return;
+            abilityList = new[] {claw, ram, roots};
 
-      // Getting the distance between the player and itself
-      var distance = Vector2.Distance(transform.position,
-        player.transform.position);
+            //Setting the variables for viddarot
+            SetVariables("Viddarot", 150, 1, 1, true);
+        } //Awake
 
-      if (distance < chasingRadius)
-      {
-        currentTarget = player;
-        Chase();
-      } //if
+        private void Start()
+        {
+            statuses.Add(new Stalk(stalkPeriod));
+        } //Start
 
-      if (distance < clawDistance && !isCasting) GetAbility("Claw").StartAbility(this);
+        // Update is called once per frame
+        private new void Update()
+        {
+            base.Update();
 
-      if (distance < rootDistance && !isCasting) GetAbility("Roots").StartAbility(this);
-    } //Update
+            if (!IsAlive()) return;
 
-    private void Claw()
-    {
-      Debug.Log("Im clawing");
-      //Checks if the player is in range
-      var playersInRange = clawShape.GetCharactersInRange<Player>();
+            // Getting the distance between the player and itself
+            var distance = Vector2.Distance(transform.position,
+                player.transform.position);
 
-      if (playersInRange.Length > 0)
-      {
-        //Hits the player
-        currentTarget = playersInRange[0];
+            if (distance < chasingRadius)
+            {
+                currentTarget = player;
+                Chase();
+            } //if
 
-        //Deals damage to the player
-        currentTarget.TakeDamage(GetAbility("Claw").GetDamage());
+            if (distance < clawDistance && !isCasting) GetAbility("Claw").StartAbility(this);
 
-        //Adds the bleed effect to the player
-        currentTarget.AddStatus(new Bleed(3));
-      }
+            if (distance < rootDistance && !isCasting) GetAbility("Roots").StartAbility(this);
+        } //Update
 
-      //Set the kick ability cooldown
-      GetAbility("Claw").SetCoolDown();
+        private void Claw()
+        {
+            Debug.Log("Im clawing");
+            //Checks if the player is in range
+            var playersInRange = clawShape.GetCharactersInRange<Player>();
 
-      isCasting = false;
-    } //Claw
+            if (playersInRange.Length > 0)
+            {
+                //Hits the player
+                currentTarget = playersInRange[0];
 
-    private void Ram() { } //Ram
+                //Deals damage to the player
+                currentTarget.TakeDamage(GetAbility("Claw").GetDamage());
 
-    private void Roots()
-    {
-      //Checks if the player is in range
-      var playersInRange = clawShape.GetCharactersInRange<Player>();
+                //Adds the bleed effect to the player
+                currentTarget.AddStatus(new Bleed(3));
+            }
 
-      if (playersInRange.Length > 0)
-      {
-        //Hits the player
-        currentTarget = playersInRange[0];
+            //Set the kick ability cooldown
+            GetAbility("Claw").SetCoolDown();
 
-        //Deals damage to the player
-        currentTarget.TakeDamage(GetAbility("Root").GetDamage());
+            isCasting = false;
+        } //Claw
 
-        //Adds the bleed effect to the player
-        currentTarget.AddStatus(new Root(3));
-      }
+        private void Ram()
+        {
+        } //Ram
 
-      GetAbility("Claw").Complete(this);
-    } //Root
-  }
+        private void Roots()
+        {
+            //Checks if the player is in range
+            var playersInRange = clawShape.GetCharactersInRange<Player>();
+
+            if (playersInRange.Length > 0)
+            {
+                //Hits the player
+                currentTarget = playersInRange[0];
+
+                //Deals damage to the player
+                currentTarget.TakeDamage(GetAbility("Root").GetDamage());
+
+                //Adds the bleed effect to the player
+                currentTarget.AddStatus(new Root(3));
+            }
+
+            GetAbility("Claw").Complete(this);
+        } //Root
+    }
 } //Viddarot

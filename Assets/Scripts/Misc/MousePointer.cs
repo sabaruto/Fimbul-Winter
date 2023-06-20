@@ -28,7 +28,10 @@ namespace Misc
         // Update is called once per frame
         private void Update()
         {
-            if (Input.GetMouseButtonDown(1)) hasRightClicked = true;
+            if (Input.GetMouseButtonDown(1)) {
+                hasRightClicked = true;
+                spriteRenderer.enabled = false;
+            }
 
             if (!hasRightClicked) currentCounter -= Time.deltaTime;
 
@@ -41,15 +44,6 @@ namespace Misc
                 StartCoroutine(ShowImage());
                 currentCounter = counter;
             }
-
-            var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-            var hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
-
-            if (hit.collider == null) return;
-
-            var e = hit.collider.GetComponent<Enemy>();
-            if (e != null) Debug.Log("Enemy!");
         }
 
         public void LateUpdate()

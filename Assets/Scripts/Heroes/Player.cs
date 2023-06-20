@@ -16,7 +16,6 @@ namespace Heroes
         public delegate void AbilityDelegate(Ability ability);
 
         // The trigger format for the abilities
-        public delegate void VoidDelegate();
 
         // The time period for the poison buff
         private const float PoisonUpTime = 3;
@@ -227,7 +226,7 @@ namespace Heroes
             if (Input.GetMouseButtonDown(0) && !isCasting && !PauseHandler.IsPaused())
             {
                 // Checks if there is an enemy around that point
-                currentTarget = gameMaster.CheckPerson<Enemy>(mousePosition);
+                currentTarget = gameMaster.CheckPerson<Character>(mousePosition);
                 if (currentTarget == null || !currentTarget.IsAlive()) currentTarget = null;
 
                 // Checks if there is a helper around the point where you click

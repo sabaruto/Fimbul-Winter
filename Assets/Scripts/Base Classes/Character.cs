@@ -111,7 +111,7 @@ namespace Base_Classes
 
         protected virtual void Die()
         {
-            foreach (var ability in abilityList) ability.Terminate();
+            if (usesAbility) foreach (var ability in abilityList) ability.Terminate();
 
             movement.SetSpeed(0);
         }

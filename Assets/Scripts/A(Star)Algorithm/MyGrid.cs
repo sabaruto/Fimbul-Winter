@@ -248,6 +248,9 @@ public class MyGrid
         // Looping through untill the program has found the end node
         do
         {
+            // Check if any nodes are found and return nil if not
+            if (foundNodes.Count < 1) return null;
+
             // Find the minimum node for the f cost
             minimumFCostIndex = foundNodes[0].GetIndex();
 
